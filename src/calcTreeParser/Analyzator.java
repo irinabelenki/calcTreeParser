@@ -2,23 +2,10 @@ package calcTreeParser;
 
 public class Analyzator {
 
-	public enum OPERATION { 
-		ADD(0), SUBTRACT(1), MULTIPLY(2), DIVIDE(3), ILLEGAL_OPERATION(4);
-		
-		private final int value;
-	    
-		private OPERATION(int value) {
-	        this.value = value;
-	    }
-
-	    public int getValue() {
-	        return value;
-	    }
-	};
-	
 	public enum STATE { WAITING_FOR_LEFT_OPERAND,
 						WAITING_FOR_RIGHT_OPERAND,
-						WAITING_FOR_OPERATION };
+						WAITING_FOR_OPERATION 
+					  };
 	
 	public static Tree buildTree(Parser parser) throws Exception {
 		Tree tree = new Tree();
@@ -46,7 +33,7 @@ public class Analyzator {
 				System.out.println("Not an operand");
 			}
 			
-			OPERATION operation = getOperation(token);
+			Expression.OPERATION operation = getOperation(token);
 			if(state == STATE.WAITING_FOR_OPERATION) {
 				state = STATE.WAITING_FOR_RIGHT_OPERAND;
 				tree.addOperation(operation);
@@ -60,19 +47,19 @@ public class Analyzator {
 		return tree;
 	}
 	
-	private static OPERATION getOperation(String operation) {
+	private static Expression.OPERATION getOperation(String operation) {
 		if(operation.equals("+")) {
-			return OPERATION.ADD;
+			return Expression.OPERATION.ADD;
 		}
 		else if(operation.equals("-")) {
-			return OPERATION.SUBTRACT;
+			return Expression.OPERATION.SUBTRACT;
 		}
 		else if(operation.equals("*")) {
-			return OPERATION.MULTIPLY;
+			return Expression.OPERATION.MULTIPLY;
 		}
 		else if(operation.equals("/")) {
-			return OPERATION.DIVIDE;
+			return Expression.OPERATION.DIVIDE;
 		}
-		return OPERATION.ILLEGAL_OPERATION;
+		return Expression.OPERATION.ILLEGAL_OPERATION;
 	}
 }

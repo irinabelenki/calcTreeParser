@@ -1,8 +1,8 @@
 package calcTreeParser;
 
 public class Tree {
-	Element root = null;
-	Element left = null;
+	Node root = null;
+	Node left = null;
 	
 	public void addLeftOperand(int operand) {
 		left = new Leaf(operand);
@@ -12,17 +12,24 @@ public class Tree {
 		root.right = new Leaf(operand);
 	}
 	
-	public void addOperation(Analyzator.OPERATION operation) {
+	public void addOperation(Expression.OPERATION operation) {
 		if (root == null) {
-			root = new Node(operation.getValue());
+			root = new Expression(operation);
 			if (left != null) {
 				root.left = left;
 			}
 		}
 		else {
-			Node newRoot = new Node(operation.getValue());
-			newRoot.left = root;
-			root = newRoot;
+			if (operation == Expression.OPERATION.ADD ||
+				operation == Expression.OPERATION.SUBTRACT) {				
+				Expression newRoot = new Expression(operation);
+				newRoot.left = root;
+				root = newRoot;
+			}
+			else if (operation == Expression.OPERATION.MULTIPLY ||
+					operation == Expression.OPERATION.DIVIDE) {
+				
+			}
 		}
 	}
 	
