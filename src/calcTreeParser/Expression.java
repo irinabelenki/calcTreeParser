@@ -1,6 +1,6 @@
 package calcTreeParser;
 
-class Expression extends Node {
+public class Expression extends Node {
 	public enum OPERATION { ADD, 
 							SUBTRACT, 
 							MULTIPLY, 

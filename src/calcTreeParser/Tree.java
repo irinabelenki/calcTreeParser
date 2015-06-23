@@ -36,5 +36,4 @@ public class Tree {
 	public int evaluate() {
 		return root.evaluate();
 	}
-
 }

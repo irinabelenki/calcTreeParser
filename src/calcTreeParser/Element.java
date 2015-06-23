@@ -1,9 +1,9 @@
 package calcTreeParser;
 
-public abstract class Node {
+public abstract class Element {
 	int number = 0;
-	Node left = null;
-	Node right = null;
+	Element left = null;
+	Element right = null;
 	int evaluate() {
 		return 0;
 	}

@@ -62,4 +62,5 @@ public class Analyzator {
 		}
 		return Expression.OPERATION.ILLEGAL_OPERATION;
 	}
+	
 }
