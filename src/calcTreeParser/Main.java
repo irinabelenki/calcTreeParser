@@ -10,9 +10,7 @@ public class Main {
 		
 		try {
 			String line = new BufferedReader(new InputStreamReader(System.in)).readLine();
-			Parser parser = new Parser(line);
-			Tree tree = Analyzator.buildTree(parser);
-			int result = tree.evaluate();
+			int result = Analyzator.evaluate(new Parser(line));
 			System.out.println("Result: " + result);
 		} 
 		catch (Exception e) {

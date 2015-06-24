@@ -7,8 +7,8 @@ public class Analyzator {
 						WAITING_FOR_OPERATION 
 					  };
 	
-	public static Tree buildTree(Parser parser) throws Exception {
-		Tree tree = new Tree();
+	private static void buildTree(Parser parser) throws Exception {
+		//Tree tree = new Tree();
 		STATE state = STATE.WAITING_FOR_LEFT_OPERAND;
 		
 		while (parser.hasMoreTokens()) {
@@ -17,12 +17,12 @@ public class Analyzator {
 				int operand = Integer.parseInt(token);
 				if (state == STATE.WAITING_FOR_LEFT_OPERAND) {
 					state = STATE.WAITING_FOR_OPERATION;
-					tree.addLeftOperand(operand);
+					addLeftOperand(operand);
 					continue;
 				}
 				else if (state == STATE.WAITING_FOR_RIGHT_OPERAND) {
 					state = STATE.WAITING_FOR_OPERATION;
-					tree.addRightOperand(operand);
+					addRightOperand(operand);
 					continue;
 				}
 				else {
@@ -36,7 +36,7 @@ public class Analyzator {
 			Expression.OPERATION operation = getOperation(token);
 			if(state == STATE.WAITING_FOR_OPERATION) {
 				state = STATE.WAITING_FOR_RIGHT_OPERAND;
-				tree.addOperation(operation);
+				addOperation(operation);
 				continue;
 			}
 			else {
@@ -44,7 +44,7 @@ public class Analyzator {
 			}
 			
 		}
-		return tree;
+		//return tree;
 	}
 	
 	private static Expression.OPERATION getOperation(String operation) {
@@ -63,4 +63,40 @@ public class Analyzator {
 		return Expression.OPERATION.ILLEGAL_OPERATION;
 	}
 	
+	static Node root = null;
+	static Node left = null;
+	
+	public static void addLeftOperand(int operand) {
+		left = new Leaf(operand);
+	}
+	
+	public static void addRightOperand(int operand) {
+		root.right = new Leaf(operand);
+	}
+	
+	public static void addOperation(Expression.OPERATION operation) {
+		if (root == null) {
+			root = new Expression(operation);
+			if (left != null) {
+				root.left = left;
+			}
+		}
+		else {
+			if (operation == Expression.OPERATION.ADD ||
+				operation == Expression.OPERATION.SUBTRACT) {				
+				Expression newRoot = new Expression(operation);
+				newRoot.left = root;
+				root = newRoot;
+			}
+			else if (operation == Expression.OPERATION.MULTIPLY ||
+					operation == Expression.OPERATION.DIVIDE) {
+				
+			}
+		}
+	}
+	
+	public static int evaluate(Parser parser) throws Exception {
+		buildTree(parser);
+		return root.evaluate();
+	}
 }
