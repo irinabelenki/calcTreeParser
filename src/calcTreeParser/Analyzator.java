@@ -1,5 +1,7 @@
 package calcTreeParser;
 
+import calcTreeParser.Expression.OPERATION;
+
 public class Analyzator {
 
 	public enum STATE { WAITING_FOR_LEFT_OPERAND,
@@ -10,6 +12,7 @@ public class Analyzator {
 	private static void buildTree(Parser parser) throws Exception {
 		//Tree tree = new Tree();
 		STATE state = STATE.WAITING_FOR_LEFT_OPERAND;
+		Expression.OPERATION lastOperation = OPERATION.ILLEGAL_OPERATION;
 		
 		while (parser.hasMoreTokens()) {
 			String token = parser.nextToken();
@@ -22,7 +25,7 @@ public class Analyzator {
 				}
 				else if (state == STATE.WAITING_FOR_RIGHT_OPERAND) {
 					state = STATE.WAITING_FOR_OPERATION;
-					addRightOperand(operand);
+					addRightOperand(operand, lastOperation);
 					continue;
 				}
 				else {
@@ -33,10 +36,10 @@ public class Analyzator {
 				System.out.println("Not an operand");
 			}
 			
-			Expression.OPERATION operation = getOperation(token);
+			lastOperation = getOperation(token);
 			if(state == STATE.WAITING_FOR_OPERATION) {
 				state = STATE.WAITING_FOR_RIGHT_OPERAND;
-				addOperation(operation);
+				addOperation(lastOperation);
 				continue;
 			}
 			else {
@@ -44,7 +47,6 @@ public class Analyzator {
 			}
 			
 		}
-		//return tree;
 	}
 	
 	private static Expression.OPERATION getOperation(String operation) {
@@ -63,15 +65,28 @@ public class Analyzator {
 		return Expression.OPERATION.ILLEGAL_OPERATION;
 	}
 	
-	static Node root = null;
-	static Node left = null;
+	static Expression root = null;
+	static Leaf left = null;
+	static Leaf right = null;
 	
 	public static void addLeftOperand(int operand) {
 		left = new Leaf(operand);
 	}
 	
-	public static void addRightOperand(int operand) {
-		root.right = new Leaf(operand);
+	public static void addRightOperand(int operand, Expression.OPERATION lastOperation) {
+		if (lastOperation == Expression.OPERATION.ADD ||
+			lastOperation == Expression.OPERATION.SUBTRACT) {
+			right = new Leaf(operand);
+			root.right = right;
+		}
+		else if (lastOperation == Expression.OPERATION.MULTIPLY ||
+				lastOperation == Expression.OPERATION.DIVIDE) {
+			Node mostRight = root;
+			while (mostRight.right != null) {
+				mostRight = mostRight.right;
+			}
+			mostRight.right = new Leaf(operand);
+		}
 	}
 	
 	public static void addOperation(Expression.OPERATION operation) {
@@ -90,7 +105,9 @@ public class Analyzator {
 			}
 			else if (operation == Expression.OPERATION.MULTIPLY ||
 					operation == Expression.OPERATION.DIVIDE) {
-				
+				Expression newRight = new Expression(operation);
+				newRight.left = root.right;
+				root.right = newRight;
 			}
 		}
 	}
