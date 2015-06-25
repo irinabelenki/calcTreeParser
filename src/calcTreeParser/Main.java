@@ -10,7 +10,7 @@ public class Main {
 		
 		try {
 			String line = new BufferedReader(new InputStreamReader(System.in)).readLine();
-			int result = Analyzator.evaluate(new Parser(line));
+			int result = Analyzator.buildTree(new Parser(line));
 			System.out.println("Result: " + result);
 		} 
 		catch (Exception e) {

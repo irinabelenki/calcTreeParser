@@ -6,13 +6,18 @@ public class Analyzator {
 
 	public enum STATE { WAITING_FOR_LEFT_OPERAND,
 						WAITING_FOR_RIGHT_OPERAND,
-						WAITING_FOR_OPERATION 
+						WAITING_FOR_OPERATION,
+						BEGIN_ANALYZATOR,
+						END_ANALYZATOR
 					  };
 	
-	private static void buildTree(Parser parser) throws Exception {
-		//Tree tree = new Tree();
+	public static int buildTree(Parser parser) throws Exception {
+
 		STATE state = STATE.WAITING_FOR_LEFT_OPERAND;
 		Expression.OPERATION lastOperation = OPERATION.ILLEGAL_OPERATION;
+		Expression root = new Expression(OPERATION.ILLEGAL_OPERATION);
+		Leaf left = new Leaf();
+		//Leaf right = new Leaf();
 		
 		while (parser.hasMoreTokens()) {
 			String token = parser.nextToken();
@@ -20,12 +25,12 @@ public class Analyzator {
 				int operand = Integer.parseInt(token);
 				if (state == STATE.WAITING_FOR_LEFT_OPERAND) {
 					state = STATE.WAITING_FOR_OPERATION;
-					addLeftOperand(operand);
+					addLeftOperand(operand, left);
 					continue;
 				}
 				else if (state == STATE.WAITING_FOR_RIGHT_OPERAND) {
 					state = STATE.WAITING_FOR_OPERATION;
-					addRightOperand(operand, lastOperation);
+					root = addRightOperand(operand, lastOperation, root);
 					continue;
 				}
 				else {
@@ -36,17 +41,35 @@ public class Analyzator {
 				System.out.println("Not an operand");
 			}
 			
+			if (token.equals("(")) {
+				int result = buildTree(parser);
+				System.out.println("buildTree returns: " + result);
+				if (state == STATE.WAITING_FOR_LEFT_OPERAND) {
+					state = STATE.WAITING_FOR_OPERATION;
+					addLeftOperand(result, left);
+					continue;
+				}
+				else if (state == STATE.WAITING_FOR_RIGHT_OPERAND) {
+					state = STATE.WAITING_FOR_OPERATION;
+					root = addRightOperand(result, lastOperation, root);
+					continue;
+				}
+			}
+			else if (token.equals(")")) {
+				break;
+			}
+			
 			lastOperation = getOperation(token);
 			if(state == STATE.WAITING_FOR_OPERATION) {
 				state = STATE.WAITING_FOR_RIGHT_OPERAND;
-				addOperation(lastOperation);
+				root = addOperation(lastOperation, root, left);
 				continue;
 			}
 			else {
 				throw new Exception("Illegal string input");
-			}
-			
-		}
+			}			
+		}//while
+		return root.evaluate();
 	}
 	
 	private static Expression.OPERATION getOperation(String operation) {
@@ -65,18 +88,18 @@ public class Analyzator {
 		return Expression.OPERATION.ILLEGAL_OPERATION;
 	}
 	
-	static Expression root = null;
-	static Leaf left = null;
-	static Leaf right = null;
+	//static Expression root = null;
+	//static Leaf left = null;
+	//static Leaf right = null;
 	
-	public static void addLeftOperand(int operand) {
-		left = new Leaf(operand);
+	private static void addLeftOperand(int operand, Leaf left) {
+		left.setNumber(operand);
 	}
 	
-	public static void addRightOperand(int operand, Expression.OPERATION lastOperation) {
+	private static Expression addRightOperand(int operand, Expression.OPERATION lastOperation, Expression root) {
 		if (lastOperation == Expression.OPERATION.ADD ||
 			lastOperation == Expression.OPERATION.SUBTRACT) {
-			right = new Leaf(operand);
+			Leaf right = new Leaf(operand);
 			root.right = right;
 		}
 		else if (lastOperation == Expression.OPERATION.MULTIPLY ||
@@ -87,11 +110,12 @@ public class Analyzator {
 			}
 			mostRight.right = new Leaf(operand);
 		}
+		return root;
 	}
 	
-	public static void addOperation(Expression.OPERATION operation) {
-		if (root == null) {
-			root = new Expression(operation);
+	private static Expression addOperation(Expression.OPERATION operation, Expression root, Leaf left) {
+		if (root.getOperation() == OPERATION.ILLEGAL_OPERATION) {
+			root.setOperation(operation);
 			if (left != null) {
 				root.left = left;
 			}
@@ -110,10 +134,7 @@ public class Analyzator {
 				root.right = newRight;
 			}
 		}
+		return root;
 	}
 	
-	public static int evaluate(Parser parser) throws Exception {
-		buildTree(parser);
-		return root.evaluate();
-	}
 }

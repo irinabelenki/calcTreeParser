@@ -14,6 +14,14 @@ public class Expression extends Node {
 		this.operation = operation;
 	}
 	
+	public OPERATION getOperation() {
+		return operation;
+	}
+	
+	public void setOperation(OPERATION operation) {
+		this.operation = operation;
+	}
+	
 	int evaluate() {
 		if (operation == OPERATION.ADD) {
 			return left.evaluate() + right.evaluate();

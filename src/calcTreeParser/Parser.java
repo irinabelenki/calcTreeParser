@@ -21,7 +21,16 @@ public class Parser {
 		
 		for (char ch : array) {
 		    currChar = ch;
-		    if ((Character.isDigit(currChar) && !Character.isDigit(prevChar)) ||
+		    if(currChar == '(' || currChar == ')') {
+		    	if(tokenBuilder != null) {
+		    		tokensList.add(tokenBuilder.toString());
+		    	}
+		    	tokenBuilder = new StringBuilder();
+		    	tokenBuilder.append(ch);
+		    	tokensList.add(tokenBuilder.toString());
+		    	tokenBuilder = null;
+		    }
+		    else if ((Character.isDigit(currChar) && !Character.isDigit(prevChar)) ||
 		    	(!Character.isDigit(currChar) && currChar != ' ' && Character.isDigit(prevChar)) ||
 		    	prevChar == ' ') {
 		    	if(tokenBuilder != null) {
@@ -32,7 +41,10 @@ public class Parser {
 		    }
 		    else if ((Character.isDigit(currChar) && Character.isDigit(prevChar)) ||
 		    		 (!Character.isDigit(currChar) && currChar != ' ' && !Character.isDigit(prevChar))) {
-		    	tokenBuilder.append(ch);
+		    	if(tokenBuilder == null) {
+		    		tokenBuilder = new StringBuilder();
+		    		tokenBuilder.append(ch);
+		    	}
 		    }
 		    else if (currChar == ' ') {
 		    	tokensList.add(tokenBuilder.toString());
