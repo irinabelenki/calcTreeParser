@@ -17,7 +17,6 @@ public class Analyzator {
 		Expression.OPERATION lastOperation = OPERATION.ILLEGAL_OPERATION;
 		Expression root = new Expression(OPERATION.ILLEGAL_OPERATION);
 		Leaf left = new Leaf();
-		//Leaf right = new Leaf();
 		
 		while (parser.hasMoreTokens()) {
 			String token = parser.nextToken();
@@ -38,7 +37,7 @@ public class Analyzator {
 				}
 			} 
 			catch (NumberFormatException nfe) {
-				System.out.println("Not an operand");
+				//System.out.println("Not an operand");
 			}
 			
 			if (token.equals("(")) {
@@ -87,10 +86,6 @@ public class Analyzator {
 		}
 		return Expression.OPERATION.ILLEGAL_OPERATION;
 	}
-	
-	//static Expression root = null;
-	//static Leaf left = null;
-	//static Leaf right = null;
 	
 	private static void addLeftOperand(int operand, Leaf left) {
 		left.setNumber(operand);
