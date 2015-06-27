@@ -7,6 +7,25 @@ public class Expression extends Node {
 							DIVIDE, 
 							ILLEGAL_OPERATION	
 						  };
+						  
+	private Node left = null;
+	private Node right = null;
+	
+	public Node getLeft() {
+		return left;
+	}
+	
+	public Node getRight() {
+		return right;
+	}
+	
+	public void setLeft(Node left) {
+		this.left = left;
+	}
+	
+	public void setRight(Node right) {
+		this.right = right;
+	}
 	
 	private OPERATION operation;
 	
@@ -22,7 +41,7 @@ public class Expression extends Node {
 		this.operation = operation;
 	}
 	
-	int evaluate() {
+	public int evaluate() {
 		if (operation == OPERATION.ADD) {
 			return left.evaluate() + right.evaluate();
 		}

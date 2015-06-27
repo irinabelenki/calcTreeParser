@@ -100,15 +100,15 @@ public class Analyzator {
 		if (lastOperation == Expression.OPERATION.ADD ||
 			lastOperation == Expression.OPERATION.SUBTRACT) {
 			Leaf right = new Leaf(operand);
-			root.right = right;
+			root.setRight(right);
 		}
 		else if (lastOperation == Expression.OPERATION.MULTIPLY ||
 				lastOperation == Expression.OPERATION.DIVIDE) {
 			Node mostRight = root;
-			while (mostRight.right != null) {
-				mostRight = mostRight.right;
+			while (mostRight.getRight() != null) {
+				mostRight = mostRight.getRight();
 			}
-			mostRight.right = new Leaf(operand);
+			mostRight.setRight(new Leaf(operand));
 		}
 		return root;
 	}
@@ -117,21 +117,21 @@ public class Analyzator {
 		if (root.getOperation() == OPERATION.ILLEGAL_OPERATION) {
 			root.setOperation(operation);
 			if (left != null) {
-				root.left = left;
+				root.setLeft(left);
 			}
 		}
 		else {
 			if (operation == Expression.OPERATION.ADD ||
 				operation == Expression.OPERATION.SUBTRACT) {				
 				Expression newRoot = new Expression(operation);
-				newRoot.left = root;
+				newRoot.setLeft(root);
 				root = newRoot;
 			}
 			else if (operation == Expression.OPERATION.MULTIPLY ||
 					operation == Expression.OPERATION.DIVIDE) {
 				Expression newRight = new Expression(operation);
-				newRight.left = root.right;
-				root.right = newRight;
+				newRight.setLeft(root.getRight());
+				root.setRight(newRight);
 			}
 		}
 		return root;

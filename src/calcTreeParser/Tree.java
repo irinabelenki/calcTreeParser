@@ -9,21 +9,21 @@ public class Tree {
 	}
 	
 	public void addRightOperand(int operand) {
-		root.right = new Leaf(operand);
+		root.setRight(new Leaf(operand));
 	}
 	
 	public void addOperation(Expression.OPERATION operation) {
 		if (root == null) {
 			root = new Expression(operation);
 			if (left != null) {
-				root.left = left;
+				root.setLeft(left);
 			}
 		}
 		else {
 			if (operation == Expression.OPERATION.ADD ||
 				operation == Expression.OPERATION.SUBTRACT) {				
 				Expression newRoot = new Expression(operation);
-				newRoot.left = root;
+				newRoot.setLeft(root);
 				root = newRoot;
 			}
 			else if (operation == Expression.OPERATION.MULTIPLY ||

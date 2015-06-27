@@ -22,7 +22,7 @@ public class Leaf extends Node {
 		initialized = true;
 	}
 
-	int evaluate() {
+	public int evaluate() {
 		return number;
 	}
 }

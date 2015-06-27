@@ -2,10 +2,21 @@ package calcTreeParser;
 
 public abstract class Node {
 	
-	Node left = null;
-	Node right = null;
+	public Node getLeft() {
+		return null;
+	}
 	
-	int evaluate() {
+	public Node getRight() {
+		return null;
+	}
+	
+	public void setLeft(Node left) {
+	}
+	
+	public void setRight(Node right) {
+	}
+	
+	public int evaluate() {
 		return 0;
 	}
 }

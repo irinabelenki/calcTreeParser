@@ -7,51 +7,71 @@ import java.util.ListIterator;
 public class Parser {
 	private List<String> tokensList = new ArrayList<String>();
 	private ListIterator<String> tokensListIt = null;
+	private char DELIMITER = ' ';
 		
 	public Parser(String line) {
 		parse(line.trim());
 	}
 	
+	enum TOKEN_TYPE { OPERATION, DIGIT, UNKNOWN };
+	
 	private void parse(String line) {
 		char[] array = line.toCharArray();
 		
-		char currChar = ' ';
-		char prevChar = ' ';
+		char currChar;
 		StringBuilder tokenBuilder = null;
+		TOKEN_TYPE tokenType = TOKEN_TYPE.UNKNOWN;
 		
 		for (char ch : array) {
 		    currChar = ch;
-		    if(currChar == '(' || currChar == ')') {
+		    if(isOperation(currChar)) {
 		    	if(tokenBuilder != null) {
 		    		tokensList.add(tokenBuilder.toString());
 		    	}
 		    	tokenBuilder = new StringBuilder();
 		    	tokenBuilder.append(ch);
+		    	tokenType = TOKEN_TYPE.OPERATION;
 		    	tokensList.add(tokenBuilder.toString());
 		    	tokenBuilder = null;
 		    }
-		    else if ((Character.isDigit(currChar) && !Character.isDigit(prevChar)) ||
-		    	(!Character.isDigit(currChar) && currChar != ' ' && Character.isDigit(prevChar)) ||
-		    	prevChar == ' ') {
+		    else if (Character.isDigit(currChar)) {
 		    	if(tokenBuilder != null) {
-		    		tokensList.add(tokenBuilder.toString());
+		    		if (tokenType == TOKEN_TYPE.DIGIT) {
+		    			tokenBuilder.append(ch);
+		    		}
+		    		else {
+		    			tokensList.add(tokenBuilder.toString());
+				    	tokenBuilder = null;
+		    		}
 		    	}
-		    	tokenBuilder = new StringBuilder();
-		    	tokenBuilder.append(ch);
-		    }
-		    else if ((Character.isDigit(currChar) && Character.isDigit(prevChar)) ||
-		    		 (!Character.isDigit(currChar) && currChar != ' ' && !Character.isDigit(prevChar))) {
-		    	if(tokenBuilder == null) {
+		    	else {
 		    		tokenBuilder = new StringBuilder();
 		    		tokenBuilder.append(ch);
+		    		tokenType = TOKEN_TYPE.DIGIT;
 		    	}
 		    }
-		    else if (currChar == ' ') {
-		    	tokensList.add(tokenBuilder.toString());
-		    	tokenBuilder = null;
+		    else if (currChar == DELIMITER) {
+		    	if (tokenBuilder != null) {
+		    		tokensList.add(tokenBuilder.toString());
+		    		tokenBuilder = null;
+		    	}
 		    }
-		    
-		    prevChar = currChar;
+		    else {
+		    	if(tokenBuilder != null) {
+		    		if (tokenType == TOKEN_TYPE.UNKNOWN) {
+		    			tokenBuilder.append(ch);
+		    		}
+		    		else {
+		    			tokensList.add(tokenBuilder.toString());
+				    	tokenBuilder = null;
+		    		}
+		    	}
+		    	else {
+		    		tokenBuilder = new StringBuilder();
+		    		tokenBuilder.append(ch);
+		    		tokenType = TOKEN_TYPE.UNKNOWN;
+		    	}
+		    }
 		}//for
 		if(tokenBuilder != null) {
     		tokensList.add(tokenBuilder.toString());
@@ -59,6 +79,15 @@ public class Parser {
 		tokensListIt = tokensList.listIterator();
 	}
 	
+	private boolean isOperation(char ch) {
+		if (ch == '+' || ch == '-' || 
+			ch == '*' || ch == '/' ||
+			ch == '(' || ch == ')') {
+			return true;
+		}
+		return false;
+	}
+
 	public boolean hasMoreTokens() {
 		return tokensListIt.hasNext();
 	}
