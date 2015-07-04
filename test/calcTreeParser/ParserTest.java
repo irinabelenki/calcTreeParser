@@ -1,27 +1,44 @@
 package calcTreeParser;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 
+import junit.framework.TestCase;
 
-public class ParserTest {
+@RunWith(Parameterized.class)
+public class ParserTest extends TestCase {
+	// (new String[]{ "1", "+", "2" })
+
+	@Parameters
+	public static Collection<Object[]> data() {
+		return Arrays.asList(new Object[][] {
+				{ "1+2", new String[] { "1", "+", "2" } },
+				{ "( 2+3+(44*1) )", new String[] { "(", "2", "+", "3", "+", "(", "44", "*", "1", ")", ")" } },
+				});
+	}
+
+	@Parameter
+	public String source;
+
+	@Parameter(value = 1)
+	public String res[];
 
 	@Test
-	public void test() {
-		String[] answers = {"(", "2", "+", "3", "+", "(", "44", "*", "1", ")", ")"};
-		List<String> answersList = new ArrayList<String>(Arrays.asList(answers));
+	public void testParser() {
 		
-		Parser parser = new Parser("( 2+3+(44*1) )");
+		Parser parser = new Parser(source);
 		List<String> tokensList = new ArrayList<String>();
 		while(parser.hasMoreTokens()) {
 			tokensList.add(parser.nextToken());
 		}
-		assertEquals(answersList, tokensList);
+		assertEquals(Arrays.asList(res), tokensList);
 	}
-
 }
