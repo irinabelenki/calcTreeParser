@@ -1,6 +1,10 @@
 package calcTreeParser;
 
 import java.util.ArrayList;
+
+// 1. Why not make it implements Iterable - JH?
+// Whitespace may include tabulation, not only space; see Character.isWhitespace
+
 import java.util.List;
 import java.util.ListIterator;
 

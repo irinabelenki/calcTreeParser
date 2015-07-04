@@ -22,6 +22,7 @@ public class ParserTest extends TestCase {
 		return Arrays.asList(new Object[][] {
 				{ "1+2", new String[] { "1", "+", "2" } },
 				{ "( 2+3+(44*1) )", new String[] { "(", "2", "+", "3", "+", "(", "44", "*", "1", ")", ")" } },
+				{ "( 2 + 3+( 44  *1) )", new String[] { "(", "2", "+", "3", "+", "(", "44", "*", "1", ")", ")" } },
 				});
 	}
 
