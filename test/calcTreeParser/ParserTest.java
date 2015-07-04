@@ -1,14 +1,18 @@
 package calcTreeParser;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class ParserTest extends TestCase {
 
-	public void testParser() {
+public class ParserTest {
+
+	@Test
+	public void test() {
 		String[] answers = {"(", "2", "+", "3", "+", "(", "44", "*", "1", ")", ")"};
 		List<String> answersList = new ArrayList<String>(Arrays.asList(answers));
 		
