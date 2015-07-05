@@ -5,13 +5,13 @@ import java.util.ArrayList;
 // 1. Why not make it implements Iterable - JH?
 // Whitespace may include tabulation, not only space; see Character.isWhitespace
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public class Parser {
+public class Parser implements Iterable<String> {
 	private List<String> tokensList = new ArrayList<String>();
 	private ListIterator<String> tokensListIt = null;
-	private char DELIMITER = ' ';
 
 	public Parser(String line) {
 		parse(line.trim());
@@ -45,14 +45,16 @@ public class Parser {
 						tokenBuilder.append(ch);
 					} else {
 						tokensList.add(tokenBuilder.toString());
-						tokenBuilder = null;
+						tokenBuilder = new StringBuilder();
+						tokenBuilder.append(ch);
+						tokenType = TOKEN_TYPE.DIGIT;
 					}
 				} else {
 					tokenBuilder = new StringBuilder();
 					tokenBuilder.append(ch);
 					tokenType = TOKEN_TYPE.DIGIT;
 				}
-			} else if (currChar == DELIMITER) {
+			} else if (Character.isWhitespace(currChar)) {
 				if (tokenBuilder != null) {
 					tokensList.add(tokenBuilder.toString());
 					tokenBuilder = null;
@@ -63,7 +65,9 @@ public class Parser {
 						tokenBuilder.append(ch);
 					} else {
 						tokensList.add(tokenBuilder.toString());
-						tokenBuilder = null;
+						tokenBuilder = new StringBuilder();
+						tokenBuilder.append(ch);
+						tokenType = TOKEN_TYPE.UNKNOWN;
 					}
 				} else {
 					tokenBuilder = new StringBuilder();
@@ -92,6 +96,11 @@ public class Parser {
 
 	public String nextToken() {
 		return tokensListIt.next();
+	}
+
+	@Override
+	public Iterator<String> iterator() {
+		return tokensListIt;
 	}
 
 }
